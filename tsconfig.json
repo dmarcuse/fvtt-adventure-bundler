@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "target": "ES2018",
+        "module": "ESNext",
+        "lib": [
+            "DOM",
+            "DOM.Iterable",
+            "ESNext"
+        ],
+        "esModuleInterop": true,
+        "moduleResolution": "node",
+        "strict": true,
+        "types": [],
+        "typeRoots": [
+            "types/"
+        ]
+    },
+    "exclude": [
+        "node_modules"
+    ]
+}

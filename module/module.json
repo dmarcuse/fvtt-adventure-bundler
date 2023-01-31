@@ -1,0 +1,23 @@
+{
+    "id": "adventure-bundler",
+    "title": "Adventure Bundler",
+    "version": "0.1.0",
+    "description": "Export and import adventures, with assets included",
+    "authors": [
+        {
+            "name": "Dana Marcuse",
+            "url": "https://github.com/dmarcuse"
+        }
+    ],
+    "esmodules": [
+        "js/main.js"
+    ],
+    "styles": [],
+    "languages": [
+        {
+            "lang": "en",
+            "name": "English",
+            "path": "lang/en.json"
+        }
+    ]
+}
