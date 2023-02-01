@@ -1,7 +1,10 @@
+import { isAssetField } from "./assets";
+import JSZip from "jszip";
+
 import fields = foundry.data.fields;
 import abstract = foundry.abstract;
 
-interface VisitedField {
+export interface VisitedField {
     descriptor: fields.DataField;
     value?: unknown;
 }
@@ -17,7 +20,7 @@ function visitFieldsRecursive<T = unknown>(
 
     let fieldDescriptor: fields.DataField = fieldDescriptorOrDoc;
     if ("prototype" in fieldDescriptorOrDoc) {
-        if (fieldDescriptorOrDoc.prototype instanceof abstract.Document || fieldDescriptorOrDoc === abstract.Document) {
+        if (foundry.utils.isSubclass(fieldDescriptorOrDoc, abstract.Document)) {
             fieldDescriptor = fieldDescriptorOrDoc.schema;
         }
     }
@@ -44,12 +47,24 @@ function visitFieldsRecursive<T = unknown>(
     }
 }
 
-export function identifyAssetPaths(data: abstract.DataModel): Set<string> {
+export function identifyAssetSources(data: abstract.DataModel): Set<string> {
     const assets = new Set<string>();
     visitFieldsRecursive(data.schema, data.toObject(false), ({ descriptor, value }) => {
-        if (descriptor instanceof fields.FilePathField && value != null) {
+        if (isAssetField(descriptor) && value != null && value !== "") {
             assets.add(value as string);
         }
     });
     return assets;
+}
+
+export interface BundlerOptions {
+    /** The assets to be included in the bundle. */
+    bundleAssets: Set<string>
+}
+
+export async function bundleAdventure(
+    originalAdventure: foundry.documents.BaseAdventure,
+    { bundleAssets }: BundlerOptions
+) {
+
 }

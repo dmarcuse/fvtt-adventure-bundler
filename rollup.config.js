@@ -9,6 +9,11 @@ export default {
         file: 'module/js/main.js',
         format: 'es',
         sourcemap: true,
+        // Trim preceding ../../ from paths so that mapped source files render
+        // in the correct part of the file tree
+        sourcemapPathTransform: (relativeSourcePath) => {
+            return relativeSourcePath.replace(/^..\/..\//, "");
+        }
     },
     plugins: [
         nodeResolve(),

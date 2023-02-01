@@ -3,6 +3,7 @@ declare module foundry {
         module fields {
             abstract class DataField {
                 name: string;
+                parent?: SchemaField;
             }
 
             class SchemaField extends DataField {
@@ -35,6 +36,11 @@ declare module foundry {
 
     module documents {
         abstract class BaseAdventure extends foundry.abstract.Document { }
+        abstract class BaseJournalEntryPage extends foundry.abstract.Document { }
+    }
+
+    module utils {
+        function isSubclass(cls: Function, parent: Function): boolean;
     }
 }
 
