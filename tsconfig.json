@@ -10,7 +10,9 @@
         "esModuleInterop": true,
         "moduleResolution": "node",
         "strict": true,
-        "types": [],
+        "types": [
+            "@types/lodash-es"
+        ],
         "typeRoots": [
             "types/"
         ]
