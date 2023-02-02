@@ -35,16 +35,28 @@ declare module foundry {
     }
 
     module documents {
-        abstract class BaseAdventure extends foundry.abstract.Document { }
+        abstract class BaseAdventure extends foundry.abstract.Document {
+            name: string;
+        }
         abstract class BaseJournalEntryPage extends foundry.abstract.Document { }
     }
 
     module utils {
         function isSubclass(cls: Function, parent: Function): boolean;
+
+        function fetchWithTimeout(
+            url: string,
+            data?: RequestInit,
+            options?: { timeoutMs: number, onTimeout: () => void }
+        ): Promise<Response>;
     }
 }
 
 declare class Adventure extends foundry.documents.BaseAdventure { }
+
+declare class SceneNavigation {
+    static displayProgressBar(options: { label: string, pct: number }): void;
+}
 
 declare const Hooks: any;
 declare const CONFIG: any;

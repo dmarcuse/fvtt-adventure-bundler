@@ -10,6 +10,7 @@
         "esModuleInterop": true,
         "moduleResolution": "node",
         "strict": true,
+        "resolveJsonModule": true,
         "types": [
             "@types/lodash-es"
         ],
