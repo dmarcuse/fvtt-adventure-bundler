@@ -1,19 +1,5 @@
-import { simplifyPath } from "./util";
+import { simplifyPath, VisitedField, visitFieldsRecursive } from "./util";
 import fields = foundry.data.fields;
-
-export function isAssetField(descriptor: fields.DataField): boolean {
-    if (descriptor instanceof fields.FilePathField) {
-        return true;
-    }
-
-    if (descriptor instanceof fields.StringField
-        && descriptor.parent === foundry.documents.BaseJournalEntryPage.schema
-        && descriptor.name === "src") {
-        return true;
-    }
-
-    return false;
-}
 
 export const enum AssetType {
     ExternalUrl,
@@ -49,4 +35,52 @@ export function classifyAsset(source: string): AssetType {
 
 export function shouldBundleAsset(type: AssetType): boolean {
     return type === AssetType.DataFile;
+}
+
+/**
+ * A record where keys are asset paths and values are arrays of arrays
+ * representing the paths within the data where the asset was referenced, e.g:
+ * 
+ * @example
+ * {
+ *   "my-world/my-actor.webp": [
+ *     ["actors", "0", "img"],
+ *     ["actors", "0", "prototypeToken", "texture", "src"]
+ *   ],
+ *   "my-world/cover.webp": [
+ *     ["img"]
+ *   ]
+ * }
+ */
+export type AssetLocations = Record<string, string[][]>;
+
+/** Extract referenced assets from the given Foundry data, recursively */
+export function identifyAssetLocations(
+    data: foundry.abstract.DataModel
+): AssetLocations {
+    const assetLocations: Record<string, string[][]> = {};
+    const insertAsset = (assetSource: string, usedBy: string[]) => {
+        if (!(assetSource in assetLocations)) {
+            assetLocations[assetSource] = [];
+        }
+        assetLocations[assetSource].push(usedBy);
+    };
+
+    visitFieldsRecursive(
+        data.schema,
+        data.toObject(false),
+        ({ pathStack, descriptor, value }) => {
+            if (value == null || value === "") {
+                return;
+            } else if (descriptor instanceof fields.FilePathField) {
+                insertAsset(value as string, pathStack);
+            } else if (descriptor instanceof fields.StringField
+                && descriptor.parent === foundry.documents.BaseJournalEntryPage.schema
+                && descriptor.name === "src") {
+                insertAsset(value as string, pathStack);
+            }
+        }
+    );
+
+    return assetLocations;
 }

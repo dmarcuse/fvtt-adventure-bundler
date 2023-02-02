@@ -1,64 +1,10 @@
-import { isAssetField } from "./assets";
+import { AssetLocations, identifyAssetLocations } from "./assets";
 import { fileExtension } from "./util";
 import JSZip from "jszip";
 import MODULE_JSON from "../module/module.json";
+import _ from "lodash-es";
 
-import fields = foundry.data.fields;
-import abstract = foundry.abstract;
 import fetchWithTimeout = foundry.utils.fetchWithTimeout;
-
-export interface VisitedField {
-    descriptor: fields.DataField;
-    value?: unknown;
-}
-
-function visitFieldsRecursive<T = unknown>(
-    fieldDescriptorOrDoc: fields.DataField | typeof abstract.Document,
-    fieldValue: T,
-    visitor: (field: VisitedField) => unknown
-): T {
-    if (fieldValue == null) {
-        return fieldValue;
-    }
-
-    let fieldDescriptor: fields.DataField = fieldDescriptorOrDoc;
-    if ("prototype" in fieldDescriptorOrDoc) {
-        if (foundry.utils.isSubclass(fieldDescriptorOrDoc, abstract.Document)) {
-            fieldDescriptor = fieldDescriptorOrDoc.schema;
-        }
-    }
-
-    if (fieldDescriptor instanceof fields.SchemaField) {
-        const data = fieldValue as Record<string, unknown>;
-        for (const [key, descriptor] of Object.entries(fieldDescriptor.fields)) {
-            if (key in data) {
-                data[key] = visitFieldsRecursive(descriptor, data[key], visitor);
-            }
-        }
-        return fieldValue;
-    } else if (fieldDescriptor instanceof fields.ArrayField) {
-        const data = fieldValue as Record<string, unknown>[];
-        for (let i = 0; i < data.length; i++) {
-            data[i] = visitFieldsRecursive(fieldDescriptor.element, data[i], visitor);
-        }
-        return fieldValue;
-    } else {
-        return visitor({
-            descriptor: fieldDescriptor,
-            value: fieldValue
-        }) as T;
-    }
-}
-
-export function identifyAssetSources(data: abstract.DataModel): Set<string> {
-    const assets = new Set<string>();
-    visitFieldsRecursive(data.schema, data.toObject(false), ({ descriptor, value }) => {
-        if (isAssetField(descriptor) && value != null && value !== "") {
-            assets.add(value as string);
-        }
-    });
-    return assets;
-}
 
 const README_CONTENTS = `This zip was generated via the ${MODULE_JSON.title} module for Foundry (v${MODULE_JSON.version}).
 Importing it requires you to install and activate the module.
@@ -66,41 +12,49 @@ Importing it requires you to install and activate the module.
 
 export interface BundlerOptions {
     /** The assets to be included in the bundle. */
-    bundleAssets: string[]
+    assetLocations: AssetLocations
 }
 
-export async function bundleAdventure(
+export async function bundleAndDownload(
     originalAdventure: foundry.documents.BaseAdventure,
-    { bundleAssets }: BundlerOptions
+    { assetLocations }: BundlerOptions
 ) {
     const remappedAssets = new Map(
-        bundleAssets.map((originalPath, i) => {
-            const ext = fileExtension(originalPath);
-            return [originalPath, `asset_${i}.${ext}`];
+        Object.keys(assetLocations).map((originalSource, i) => {
+            const ext = fileExtension(originalSource);
+            return [originalSource, `asset_${i}.${ext}`];
         })
     );
     console.log("Bundled asset mapping table created", remappedAssets);
-    const data = originalAdventure.toObject(false);
-    visitFieldsRecursive(originalAdventure.schema, data, ({ descriptor, value }) => {
-        if (isAssetField(descriptor)) {
-            return remappedAssets.get(value as string) ?? value;
-        } else {
-            return value;
+
+    const bundleData = originalAdventure.toObject(false);
+    for (const [originalSource, newSource] of remappedAssets.entries()) {
+        console.log("Updating all paths", originalSource, newSource);
+        for (const ref of assetLocations[originalSource]) {
+            console.log("Updating path", originalSource, newSource, ref);
+            _.set(bundleData, ref, newSource);
         }
-    });
+    }
+    console.log("Updated adventure asset references");
 
     console.log("Bundling adventure into zip...");
     const zip = new JSZip();
     zip.file("README.txt", README_CONTENTS);
-    zip.file("adventure.json", JSON.stringify(data));
-    zip.file("assets.json", JSON.stringify(bundleAssets));
+    zip.file("adventure.json", JSON.stringify(bundleData));
+    zip.file("assets.json", JSON.stringify(
+        _.mapKeys(
+            assetLocations,
+            (_, old) => remappedAssets.get(old)
+        )
+    ));
 
     const assetFolder = zip.folder("assets")!;
-    for (let i = 0; i < bundleAssets.length; i++) {
-        const assetPath = bundleAssets[i];
+    const toPack = Object.keys(remappedAssets);
+    for (let i = 0; i < toPack.length; i++) {
+        const assetPath = toPack[i];
         SceneNavigation.displayProgressBar({
             label: `Zipping ${assetPath}...`,
-            pct: i / bundleAssets.length
+            pct: i / toPack.length
         });
         const assetResponse = await fetchWithTimeout(assetPath);
         assetFolder.file(
