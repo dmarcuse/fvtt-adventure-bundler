@@ -3,6 +3,7 @@
     "title": "Adventure Bundler",
     "version": "0.1.0",
     "description": "Export and import adventures, with assets included",
+    "url": "https://github.com/dmarcuse/fvtt-adventure-bundler",
     "authors": [
         {
             "name": "Dana Marcuse",

@@ -1,10 +1,13 @@
-// import { bundleAndDownload } from "./bundler";
-import { classifyAsset, shouldBundleAsset, identifyAssetLocations } from "./assets";
+import { classifyAsset, shouldBundleAsset, findAssetReferences } from "./assets";
+import { exportBundleV1 } from "./bundle/v1";
 import _ from "lodash-es";
-import { bundleAndDownload } from "./bundler";
+
+// Hooks.once("init", function () {
+//     CONFIG.debug.hooks = true;
+// });
 
 // Add context menu entry to items in adventure compendiums
-Hooks.on('getCompendiumEntryContext', ([html]: [any], entries: any[]) => {
+Hooks.on("getCompendiumEntryContext", ([html]: [any], entries: any[]) => {
     const compendium = game.packs.get(html.dataset.pack);
     if (compendium?.documentClass === Adventure && game.user.isGM) {
         entries.push({
@@ -13,15 +16,23 @@ Hooks.on('getCompendiumEntryContext', ([html]: [any], entries: any[]) => {
             callback: async ([li]: [any]) => {
                 const adventure = await compendium.getDocument(li.dataset.documentId);
 
-                const assetSources = identifyAssetLocations(adventure);
-                console.log("Identified assets", assetSources);
+                const assetReferences = findAssetReferences(adventure);
+                console.log("Identified assets", assetReferences);
                 const assetsToBundle = _.pickBy(
-                    assetSources,
+                    assetReferences,
                     (_, assetPath) => shouldBundleAsset(classifyAsset(assetPath))
                 );
                 console.log("Selected assets to bundle", assetsToBundle);
 
-                await bundleAndDownload(adventure, { assetLocations: assetsToBundle });
+                try {
+                    await exportBundleV1(adventure, assetsToBundle);
+                } catch (err) {
+                    console.error("Error exporting adventure!", err);
+                    const message = err instanceof Error ? err.message : String(err);
+                    const localizedMessage = game.i18n.format("ADVENTUREBUNDLER.BundleExportFailed", { message });
+                    ui.notifications.error(localizedMessage, { localize: false, console: false });
+                    SceneNavigation.displayProgressBar({ label: "Failed!", pct: 100 });
+                }
             }
         })
     }

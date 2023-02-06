@@ -10,13 +10,14 @@
         "esModuleInterop": true,
         "moduleResolution": "node",
         "strict": true,
+        "useUnknownInCatchVariables": true,
         "resolveJsonModule": true,
         "types": [
             "@types/lodash-es"
         ],
         "typeRoots": [
             "types/"
-        ]
+        ],
     },
     "exclude": [
         "node_modules"

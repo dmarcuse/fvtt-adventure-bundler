@@ -1,3 +1,4 @@
 {
-    "ADVENTUREBUNDLER.BundleAdventureButton": "Bundle and export"
+    "ADVENTUREBUNDLER.BundleAdventureButton": "Bundle and export",
+    "ADVENTUREBUNDLER.BundleExportFailed": "Error exporting adventure: {message}"
 }

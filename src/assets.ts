@@ -1,13 +1,13 @@
 import { simplifyPath, VisitedField, visitFieldsRecursive } from "./util";
 import fields = foundry.data.fields;
 
-export const enum AssetType {
-    ExternalUrl,
-    DataUrl,
-    SystemFile,
-    ModuleFile,
-    DataFile,
-    CoreFile,
+export enum AssetType {
+    ExternalUrl = "ExternalUrl",
+    DataUrl = "DataUrl",
+    SystemFile = "SystemFile",
+    ModuleFile = "ModuleFile",
+    DataFile = "DataFile",
+    CoreFile = "CoreFile",
 }
 
 // From FilePicker#_inferCurrentDirectory()
@@ -52,18 +52,18 @@ export function shouldBundleAsset(type: AssetType): boolean {
  *   ]
  * }
  */
-export type AssetLocations = Record<string, string[][]>;
+export type AssetReferences = Record<string, string[][]>;
 
 /** Extract referenced assets from the given Foundry data, recursively */
-export function identifyAssetLocations(
+export function findAssetReferences(
     data: foundry.abstract.DataModel
-): AssetLocations {
-    const assetLocations: Record<string, string[][]> = {};
+): AssetReferences {
+    const assetReferences: AssetReferences = {};
     const insertAsset = (assetSource: string, usedBy: string[]) => {
-        if (!(assetSource in assetLocations)) {
-            assetLocations[assetSource] = [];
+        if (!(assetSource in assetReferences)) {
+            assetReferences[assetSource] = [];
         }
-        assetLocations[assetSource].push(usedBy);
+        assetReferences[assetSource].push(usedBy);
     };
 
     visitFieldsRecursive(
@@ -82,5 +82,5 @@ export function identifyAssetLocations(
         }
     );
 
-    return assetLocations;
+    return assetReferences;
 }
