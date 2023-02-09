@@ -1,6 +1,6 @@
 # Changelog
 
-## Next Release
+## Version 0.1.2 - 9 February 2023
 
 - Don't show import button for locked compendiums
 - Don't show export button for compendiums from protected modules
