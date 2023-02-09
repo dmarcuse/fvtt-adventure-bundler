@@ -1,5 +1,9 @@
 # Changelog
 
+## Next Release
+
+- Don't show import button for locked compendiums
+
 ## Version 0.1.1 - 9 February 2023
 
 - Fixed a minor visual bug with the progress bars during export/import.

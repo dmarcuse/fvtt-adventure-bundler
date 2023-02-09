@@ -210,7 +210,9 @@ declare class DocumentCollection<V extends foundry.abstract.Document> extends Co
     collection: string;
 }
 
-declare class CompendiumCollection<V extends foundry.abstract.Document> extends DocumentCollection<V> { }
+declare class CompendiumCollection<V extends foundry.abstract.Document> extends DocumentCollection<V> {
+    get locked(): boolean;
+}
 
 declare const Hooks: any;
 declare const CONFIG: any;

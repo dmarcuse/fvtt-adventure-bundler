@@ -47,7 +47,7 @@ Hooks.on("renderCompendium", (
     compendium: Compendium<foundry.abstract.Document>,
     [html]: [HTMLElement]
 ) => {
-    if (compendium.collection.documentClass === Adventure && game.user.isGM) {
+    if (compendium.collection.documentClass === Adventure && game.user.isGM && !compendium.collection.locked) {
         const importIcon = document.createElement("i");
         importIcon.classList.add("fa-solid", "fa-upload");
         const importLabel = game.i18n.localize("ADVENTUREBUNDLER.UnbundleAdventureButton");
