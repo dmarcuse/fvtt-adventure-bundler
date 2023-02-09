@@ -1,7 +1,8 @@
-import { simplifyPath, VisitedField, visitFieldsRecursive } from "./util";
+import { BUNDLE_CORE_ASSETS, BUNDLE_DATA_ASSETS, BUNDLE_DATA_URL_ASSETS, BUNDLE_EXTERNAL_URL_ASSETS, BUNDLE_MODULE_ASSETS, BUNDLE_SYSTEM_ASSETS } from "./settings";
+import { simplifyPath, visitFieldsRecursive } from "./util";
 import fields = foundry.data.fields;
 
-export enum AssetType {
+export const enum AssetType {
     ExternalUrl = "ExternalUrl",
     DataUrl = "DataUrl",
     SystemFile = "SystemFile",
@@ -33,8 +34,15 @@ export function classifyAsset(source: string): AssetType {
     }
 }
 
-export function shouldBundleAsset(type: AssetType): boolean {
-    return type === AssetType.DataFile;
+export function getAssetBundlingSettings(): Record<keyof typeof AssetType, boolean> {
+    return {
+        "CoreFile": BUNDLE_CORE_ASSETS.getValue(),
+        "SystemFile": BUNDLE_SYSTEM_ASSETS.getValue(),
+        "ModuleFile": BUNDLE_MODULE_ASSETS.getValue(),
+        "DataFile": BUNDLE_DATA_ASSETS.getValue(),
+        "ExternalUrl": BUNDLE_EXTERNAL_URL_ASSETS.getValue(),
+        "DataUrl": BUNDLE_DATA_URL_ASSETS.getValue()
+    };
 }
 
 /**

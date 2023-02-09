@@ -1,5 +1,9 @@
 # Changelog
 
+## Next release
+
+- Add settings to control which assets are included when exporting bundles
+
 ## Version 0.1.2 - 9 February 2023
 
 - Don't show import button for locked compendiums

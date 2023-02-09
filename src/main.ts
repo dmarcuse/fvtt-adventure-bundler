@@ -1,4 +1,4 @@
-import { classifyAsset, shouldBundleAsset, findAssetReferences } from "./assets";
+import { classifyAsset, getAssetBundlingSettings, findAssetReferences } from "./assets";
 import { exportBundleV1 } from "./bundle/v1";
 import { importBundle } from "./bundle";
 import { registerSettings } from "./settings";
@@ -27,9 +27,10 @@ Hooks.on("getCompendiumEntryContext", ([html]: [any], entries: any[]) => {
                     const adventure = await compendium.getDocument(li.dataset.documentId) as BaseAdventure;
 
                     const assetReferences = findAssetReferences(adventure);
+                    const bundlingSettings = getAssetBundlingSettings();
                     const assetsToBundle = _.pickBy(
                         assetReferences,
-                        (_, assetPath) => shouldBundleAsset(classifyAsset(assetPath))
+                        (_, assetPath) => bundlingSettings[classifyAsset(assetPath)]
                     );
                     await exportBundleV1(adventure, assetsToBundle);
                 } catch (err) {
