@@ -31,4 +31,5 @@ When opening an adventure compendium, you'll find a new "Import bundle" button:
 ![Screenshot showing the "Import bundle" button](.github/img/import_button.webp)
 
 Simply click the button, select your zile file, and the module will do the rest! Bundled assets will be uploaded to your
-Foundry instance automatically, so all you need to do is import the adventure.
+Foundry instance automatically, so all you need to do is import the adventure once the upload is complete. The directory
+used for uploading assets can be changed in the module settings.
