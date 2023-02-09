@@ -6,6 +6,9 @@ Foundry V10 adds support for building [adventure documents](https://foundryvtt.c
 it one step further by adding support for importing and exporting adventures, bundling any custom assets and making it a
 snap to share your work!
 
+**Please note that this is experimental software** - it works on a best effort basis, but things may break (particularly
+if you're using macros to change art).
+
 ## Installation
 
 You can install the module with the following manifest URL:
