@@ -59,7 +59,7 @@ export async function exportBundleV1(
         const [originalPath, remappedPath] = toPack[i];
         SceneNavigation.displayProgressBar({
             label: game.i18n.format("ADVENTUREBUNDLER.ExportProgressMessage", { asset: originalPath }),
-            pct: i / toPack.length
+            pct: Math.floor((i / toPack.length) * 100)
         });
         const assetResponse = await fetchWithTimeout(originalPath);
         assetFolder.file(remappedPath, await assetResponse.blob());
@@ -104,7 +104,7 @@ export async function importBundleV1(
         const [originalName, references] = bundledAssets[i];
         SceneNavigation.displayProgressBar({
             label: game.i18n.format("ADVENTUREBUNDLER.ImportProgressMessage", { asset: originalName }),
-            pct: i / bundledAssets.length
+            pct: Math.floor((i / bundledAssets.length) * 100)
         });
 
         const assetData = await zipAssets.file(originalName)?.async("blob");
@@ -114,7 +114,7 @@ export async function importBundleV1(
 
         const assetPath = joinPaths(assetDir, originalName);
         console.log(`Uploading asset: '${originalName}' to '${assetPath}'`);
-        const result = await FilePicker.upload("data", assetDir, new File([assetData], originalName));
+        const result = await FilePicker.upload("data", assetDir, new File([assetData], originalName), undefined, { notify: false });
         console.log(`Upload result for ${originalName}`, result);
         for (const reference of references) {
             _.set(bundleData.adventureData, reference, assetPath);
