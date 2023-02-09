@@ -5,6 +5,7 @@ import { registerSettings } from "./settings";
 import _ from "lodash-es";
 
 import BaseAdventure = foundry.documents.BaseAdventure;
+import { identifyPremiumCompendiums } from "./util";
 
 Hooks.once("init", function () {
     registerSettings();
@@ -13,7 +14,11 @@ Hooks.once("init", function () {
 // Add export button to adventure context menu
 Hooks.on("getCompendiumEntryContext", ([html]: [any], entries: any[]) => {
     const compendium = game.packs.get(html.dataset.pack);
-    if (compendium?.documentClass === Adventure && game.user.isGM) {
+    if (compendium != null && compendium.documentClass === Adventure && game.user.isGM) {
+        if (new Set(identifyPremiumCompendiums()).has(compendium.metadata.path)) {
+            console.log("Suppressing export button for premium compendium", compendium);
+            return;
+        }
         entries.push({
             name: "ADVENTUREBUNDLER.BundleAdventureButton",
             icon: "<i class='fas fa-download'></i>",

@@ -59,6 +59,14 @@ declare module foundry {
 
         function randomID(length?: number): string;
     }
+
+    module packages {
+        class BasePackage extends foundry.abstract.DataModel { }
+        class BaseModule extends BasePackage {
+            protected?: boolean;
+            packs?: Set<{ path: string }>
+        }
+    }
 }
 
 declare module ui {
@@ -212,7 +220,10 @@ declare class DocumentCollection<V extends foundry.abstract.Document> extends Co
 
 declare class CompendiumCollection<V extends foundry.abstract.Document> extends DocumentCollection<V> {
     get locked(): boolean;
+    metadata: any;
 }
+
+declare class Module extends foundry.packages.BaseModule { }
 
 declare const Hooks: any;
 declare const CONFIG: any;
@@ -221,4 +232,5 @@ declare const game: {
     packs: Collection<string, CompendiumCollection<foundry.abstract.Document>>;
     settings: ClientSettings;
     i18n: Localization;
+    modules: Collection<string, Module>;
 };

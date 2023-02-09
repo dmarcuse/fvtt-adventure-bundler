@@ -107,3 +107,11 @@ export async function createDirs(source: string, fullDir: string) {
         }
     }
 }
+
+export function identifyPremiumCompendiums(): string[] {
+    return _.chain([...game.modules.values()])
+        .filter(module => module.protected ?? false)
+        .flatMap(module => [...module.packs?.values() ?? []])
+        .map(pack => pack.path)
+        .value();
+}
