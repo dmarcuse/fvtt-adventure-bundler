@@ -4,6 +4,14 @@
     "version": "0.1.0",
     "description": "Export and import adventures, with assets included",
     "url": "https://github.com/dmarcuse/fvtt-adventure-bundler",
+    "readme": "https://github.com/dmarcuse/fvtt-adventure-bundler/blob/main/README.md",
+    "changelog": "https://github.com/dmarcuse/fvtt-adventure-bundler/blob/main/CHANGELOG.md",
+    "bugs": "https://github.com/dmarcuse/fvtt-adventure-bundler/issues",
+    "license": "https://github.com/dmarcuse/fvtt-adventure-bundler/blob/main/LICENSE.txt",
+    "compatibility": {
+        "minimum": "10",
+        "verified": "10"
+    },
     "authors": [
         {
             "name": "Dana Marcuse",
