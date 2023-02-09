@@ -36,6 +36,8 @@ declare module foundry {
                 data: any,
                 context?: DocumentModificationContext
             ): Promise<Document>;
+
+            delete(context?: DocumentModificationContext): Promise<this>;
         }
     }
 

@@ -91,7 +91,7 @@ export async function importBundleV1(
                 ui.notifications.warn("ADVENTUREBUNDLER.ImportCancelled", { localize: true });
                 return;
             case "overwrite":
-                // TODO
+                await existing.delete();
                 break;
             case "create_new":
                 bundleData.adventureData._id = foundry.utils.randomID();
@@ -101,7 +101,6 @@ export async function importBundleV1(
 
     const assetDir = joinPaths(IMPORT_ASSET_DIR.getValue(), bundleData.adventureData._id);
     await createDirs("data", assetDir);
-    await new Promise(resolve => window.setTimeout(resolve, 250));
     const bundledAssets = Object.entries(bundleData.bundledAssets);
     for (let i = 0; i < bundledAssets.length; i++) {
         const [originalName, references] = bundledAssets[i];
