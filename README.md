@@ -1,5 +1,7 @@
 # Foundry Adventure Bundler
 
+[**Changelog**](CHANGELOG.md)
+
 Foundry V10 adds support for building [adventure documents](https://foundryvtt.com/article/adventure). This module takes
 it one step further by adding support for importing and exporting adventures, bundling any custom assets and making it a
 snap to share your work!
