@@ -1,4 +1,18 @@
 {
     "ADVENTUREBUNDLER.BundleAdventureButton": "Bundle and export",
-    "ADVENTUREBUNDLER.BundleExportFailed": "Error exporting adventure: {message}"
+    "ADVENTUREBUNDLER.UnbundleAdventureButton": "Import bundle",
+    "ADVENTUREBUNDLER.BundleExportFailed": "Error exporting adventure: {message}",
+    "ADVENTUREBUNDLER.BundleImportFailed": "Error importing adventure: {message}",
+    "ADVENTUREBUNDLER.ImportOverwritePromptTitle": "Overwrite adventure?",
+    "ADVENTUREBUNDLER.ImportOverwritePromptMessage": "The adventure you're importing has the same ID as the existing adventure <strong>{existing}</strong>. Continue?",
+    "ADVENTUREBUNDLER.ImportOverwritePromptOverwriteButton": "Overwrite",
+    "ADVENTUREBUNDLER.ImportOverwritePromptCreateNewButton": "Use new ID",
+    "ADVENTUREBUNDLER.ImportOverwritePromptCancelButton": "Cancel",
+    "ADVENTUREBUNDLER.ImportCancelled": "Import cancelled!",
+    "ADVENTUREBUNDLER.SettingImportAssetDirName": "Imported asset folder",
+    "ADVENTUREBUNDLER.SettingImportAssetDirHint": "Where to upload assets from imported adventure bundles",
+    "ADVENTUREBUNDLER.ExportProgressMessage": "Zipping asset: {asset}",
+    "ADVENTUREBUNDLER.ImportProgressMessage": "Uploading asset: {asset}",
+    "ADVENTUREBUNDLER.ExportDoneProgressMessage": "Done!",
+    "ADVENTUREBUNDLER.ImportDoneProgressMessage": "Done!"
 }

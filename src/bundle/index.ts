@@ -1,22 +1,18 @@
-import MODULE from "../../module/module.json";
 import JSZip from "jszip";
+import { importBundleV1, isBundleV1 } from "./v1";
 
-const README_CONTENTS = `\
-This zip was generated via the ${MODULE.title} (v${MODULE.version}) module for Foundry.
-Please install and activate the module in order to import this adventure.
+export async function importBundle(
+    file: File,
+    compendium: CompendiumCollection<foundry.documents.BaseAdventure>
+) {
+    const zip = await JSZip.loadAsync(file);
+    const bundleJson = await zip.file("bundle.json")?.async("string");
+    if (bundleJson == null) {
+        throw new Error("invalid format: bundle.json file missing");
+    }
+    const bundleData = JSON.parse(bundleJson);
 
-${MODULE.url}
-`;
-
-export async function downloadBundle(filename: string, zip: JSZip) {
-    zip.file("README.txt", README_CONTENTS);
-    const zipBlob = await zip.generateAsync({ type: "blob" });
-    const downloadLink = document.createElement("a");
-    downloadLink.href = URL.createObjectURL(zipBlob);
-    try {
-        downloadLink.download = filename;
-        downloadLink.click();
-    } finally {
-        URL.revokeObjectURL(downloadLink.href);
+    if (isBundleV1(bundleData)) {
+        await importBundleV1(bundleData, zip, compendium);
     }
 }

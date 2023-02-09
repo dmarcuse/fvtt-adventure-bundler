@@ -18,6 +18,7 @@
         "typeRoots": [
             "types/"
         ],
+        "noFallthroughCasesInSwitch": true
     },
     "exclude": [
         "node_modules"

@@ -25,6 +25,10 @@ export function fileExtension(path: string): string | null {
     return ext;
 }
 
+export function joinPaths(first: string, second: string): string {
+    return first.endsWith("/") ? first + second : first + "/" + second;
+}
+
 export interface VisitedField {
     pathStack: string[];
     descriptor: fields.DataField;
@@ -78,5 +82,28 @@ export function visitFieldsRecursive<T = unknown>(
             descriptor: fieldDescriptor,
             value: fieldValue
         }) as T;
+    }
+}
+
+export async function createDirs(source: string, fullDir: string) {
+    let dirs = _.chain(simplifyPath(fullDir).split("/"))
+        .filter(segment => segment != "")
+        .reduce(
+            (parents, segment) => {
+                return [
+                    ...parents,
+                    parents.length == 0 ? segment : joinPaths(parents[parents.length - 1], segment)
+                ];
+            },
+            [] as string[]
+        )
+        .value();
+
+    for (const dir of dirs) {
+        try {
+            await FilePicker.createDirectory(source, dir);
+        } catch (e) {
+            console.error("Error creating directory", e);
+        }
     }
 }

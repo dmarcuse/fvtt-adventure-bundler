@@ -31,6 +31,11 @@ declare module foundry {
 
         abstract class Document extends DataModel {
             clone(data?: {}): this | Promise<this>;
+
+            static create(
+                data: any,
+                context?: DocumentModificationContext
+            ): Promise<Document>;
         }
     }
 
@@ -49,6 +54,8 @@ declare module foundry {
             data?: RequestInit,
             options?: { timeoutMs: number, onTimeout: () => void }
         ): Promise<Response>;
+
+        function randomID(length?: number): string;
     }
 }
 
@@ -57,6 +64,22 @@ declare module ui {
 }
 
 declare class Application { }
+
+declare class FilePicker extends Application {
+    static upload(
+        source: string,
+        path: string,
+        file: File,
+        body?: any,
+        options?: { notify: boolean }
+    ): Promise<any>;
+
+    static createDirectory(
+        source: string,
+        target: string,
+        options?: any
+    ): Promise<any>;
+}
 
 declare class FormApplication extends Application { }
 
@@ -69,7 +92,7 @@ interface NotifyOptions {
 declare class Notifications extends Application {
     notify(message: string, type?: "info" | "warning" | "error", options?: Partial<NotifyOptions>): void;
     info(message: string, options?: Partial<NotifyOptions>): void;
-    warning(message: string, options?: Partial<NotifyOptions>): void;
+    warn(message: string, options?: Partial<NotifyOptions>): void;
     error(message: string, options?: Partial<NotifyOptions>): void;
 }
 
@@ -77,6 +100,43 @@ declare class Adventure extends foundry.documents.BaseAdventure { }
 
 declare class SceneNavigation extends Application {
     static displayProgressBar(options: { label: string, pct: number }): void;
+}
+
+declare class Compendium<V extends foundry.abstract.Document> extends Application {
+    collection: CompendiumCollection<V>
+}
+
+declare type DialogButton = {
+    icon?: string,
+    label: string,
+    callback?: () => void
+};
+
+declare type DialogData = {
+    title: string;
+    content: string;
+    buttons: Partial<Record<string, DialogButton>>;
+    default?: string;
+    render?: (html: HTMLElement) => void,
+    close?: (html: HTMLElement) => void,
+};
+
+declare class Dialog extends Application {
+    constructor(data: DialogData, options?: any);
+
+    render(
+        force: boolean,
+        options?: {
+            left: number,
+            top: number,
+            width: number,
+            height: number,
+            scale: number,
+            focus: boolean,
+            renderContext: string,
+            renderData: any
+        }
+    ): Application;
 }
 
 interface SettingConfig<T> {
@@ -99,8 +159,25 @@ interface SettingSubmenuConfig {
     label: string;
     hint: string;
     icon: string;
-    type: typeof FormApplication;
+    type: new () => FormApplication;
     restricted: boolean;
+}
+
+interface DocumentModificationContext {
+    parent?: foundry.abstract.Document;
+    pack?: string;
+    noHook?: boolean;
+    index?: boolean;
+    indexFields?: string[];
+    keepId?: boolean;
+    keepEmbeddedIds?: boolean;
+    temporary?: boolean;
+    render?: boolean;
+    renderSheet?: boolean;
+    diff?: boolean;
+    recursive?: boolean;
+    isUndo?: boolean;
+    deleteAll?: boolean;
 }
 
 declare class ClientSettings {
@@ -122,11 +199,22 @@ declare class Localization {
     format(stringId: string, data?: any): string;
 }
 
+declare class Collection<K, V> extends Map<K, V> { }
+
+declare class DocumentCollection<V extends foundry.abstract.Document> extends Collection<string, V> {
+    get documentClass(): new () => V;
+    getDocument(id: string): Promise<V>;
+
+    collection: string;
+}
+
+declare class CompendiumCollection<V extends foundry.abstract.Document> extends DocumentCollection<V> { }
+
 declare const Hooks: any;
 declare const CONFIG: any;
 declare const game: {
     user: any;
-    packs: any;
+    packs: Collection<string, CompendiumCollection<foundry.abstract.Document>>;
     settings: ClientSettings;
     i18n: Localization;
 };
