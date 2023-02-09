@@ -1,6 +1,6 @@
 # Changelog
 
-## Next release
+## Version 0.2.0 - 9 February 2023
 
 - Add settings to control which assets are included when exporting bundles
 
