@@ -14,5 +14,7 @@
     "ADVENTUREBUNDLER.ExportProgressMessage": "Zipping asset: {asset}",
     "ADVENTUREBUNDLER.ImportProgressMessage": "Uploading asset: {asset}",
     "ADVENTUREBUNDLER.ExportDoneProgressMessage": "Done!",
-    "ADVENTUREBUNDLER.ImportDoneProgressMessage": "Done!"
+    "ADVENTUREBUNDLER.ImportDoneProgressMessage": "Done!",
+    "ADVENTUREBUNDLER.ExportErrorProgressMessage": "Failed!",
+    "ADVENTUREBUNDLER.ImportErrorProgressMessage": "Failed!"
 }

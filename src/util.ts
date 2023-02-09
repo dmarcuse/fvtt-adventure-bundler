@@ -103,7 +103,7 @@ export async function createDirs(source: string, fullDir: string) {
         try {
             await FilePicker.createDirectory(source, dir);
         } catch (e) {
-            console.error("Error creating directory", e);
+            // Intentionally ignored
         }
     }
 }

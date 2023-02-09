@@ -35,9 +35,7 @@ export async function exportBundleV1(
 
     const bundleData = originalAdventure.toObject(false);
     for (const [originalSource, newSource] of remappedAssets.entries()) {
-        console.log("Updating all paths", originalSource, newSource);
         for (const ref of assetReferences[originalSource]) {
-            console.log("Updating path", originalSource, newSource, ref);
             _.set(bundleData, ref, newSource);
         }
     }
