@@ -17,5 +17,9 @@
   "dependencies": {
     "jszip": "^3.10.1",
     "lodash-es": "^4.17.21"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -cw"
   }
 }
