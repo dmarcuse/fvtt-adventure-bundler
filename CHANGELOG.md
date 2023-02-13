@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.2.1 - 13 February 2023
+
+- Fix folders sometimes being broken on export
+- Properly show error messages when attempting to import invalid/unsupported bundles
+
 ## Version 0.2.0 - 9 February 2023
 
 - Add settings to control which assets are included when exporting bundles
