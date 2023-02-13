@@ -4,10 +4,16 @@ import fields = foundry.data.fields;
 import abstract = foundry.abstract;
 
 /** Simplify the given file path, handling .. and . segments */
-export function simplifyPath(path: string): string {
-    return path.split("/").reduce((segments, current) => {
-        if (current === "..") {
-            segments.pop();
+export function simplifyPath(path: string, allowRoot: boolean): string {
+    return path.split("/").reduce((segments, current, i) => {
+        if (current === "" && i === 0) {
+            if (allowRoot) {
+                segments.push("/");
+            }
+        } else if (current === "..") {
+            if (segments.pop() === undefined) {
+                throw new Error(`invalid path ${path} - attempt to get parent of root`);
+            }
         } else if (current !== ".") {
             segments.push(current);
         }
@@ -25,6 +31,7 @@ export function fileExtension(path: string): string | null {
     return ext;
 }
 
+/** Join two file paths. */
 export function joinPaths(first: string, second: string): string {
     return first.endsWith("/") ? first + second : first + "/" + second;
 }
@@ -85,8 +92,9 @@ export function visitFieldsRecursive<T = unknown>(
     }
 }
 
-export async function createDirs(source: string, fullDir: string) {
-    let dirs = _.chain(simplifyPath(fullDir).split("/"))
+export async function createDirs(source: string, fullDir: string, alreadyCreated?: Set<string>): Promise<Set<string>> {
+    const existingDirs = new Set(alreadyCreated ?? []);
+    let dirs = _.chain(simplifyPath(fullDir, false).split("/"))
         .filter(segment => segment != "")
         .reduce(
             (parents, segment) => {
@@ -97,15 +105,19 @@ export async function createDirs(source: string, fullDir: string) {
             },
             [] as string[]
         )
+        .filter(dir => !existingDirs.has(dir))
         .value();
 
     for (const dir of dirs) {
+        existingDirs.add(dir);
+        console.log("Creating directory", dir);
         try {
             await FilePicker.createDirectory(source, dir);
         } catch (e) {
             // Intentionally ignored
         }
     }
+    return existingDirs;
 }
 
 export function identifyPremiumCompendiums(): string[] {

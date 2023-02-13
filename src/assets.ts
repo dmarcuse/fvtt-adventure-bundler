@@ -21,7 +21,7 @@ export function classifyAsset(source: string): AssetType {
     } else if (source.startsWith("data:")) {
         return AssetType.DataUrl;
     } else {
-        const path = simplifyPath(source);
+        const path = simplifyPath(source, false);
         if (path.startsWith("modules/")) {
             return AssetType.ModuleFile;
         } else if (path.startsWith("systems/")) {

@@ -38,6 +38,8 @@ declare module foundry {
             ): Promise<Document>;
 
             delete(context?: DocumentModificationContext): Promise<this>;
+
+            get id(): string | null;
         }
     }
 
