@@ -37,7 +37,7 @@ Hooks.on("getCompendiumEntryContext", ([html]: [any], entries: any[]) => {
                     console.error("Error exporting adventure!", err);
                     const message = err instanceof Error ? err.message : String(err);
                     const localizedMessage = game.i18n.format("ADVENTUREBUNDLER.BundleExportFailed", { message });
-                    ui.notifications.error(localizedMessage, { localize: false, console: false });
+                    ui.notifications.error(localizedMessage, { localize: false, console: false, permanent: true });
                     SceneNavigation.displayProgressBar({
                         label: game.i18n.localize("ADVENTUREBUNDLER.ExportErrorProgressMessage"),
                         pct: 100
@@ -77,7 +77,7 @@ Hooks.on("renderCompendium", (
                     } catch (err) {
                         const message = err instanceof Error ? err.message : String(err);
                         const localizedMessage = game.i18n.format("ADVENTUREBUNDLER.BundleImportFailed", { message });
-                        ui.notifications.error(localizedMessage, { localize: false, console: false });
+                        ui.notifications.error(localizedMessage, { localize: false, console: false, permanent: true });
                         SceneNavigation.displayProgressBar({
                             label: game.i18n.localize("ADVENTUREBUNDLER.ImportErrorProgressMessage"),
                             pct: 100
