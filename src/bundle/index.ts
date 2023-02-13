@@ -10,9 +10,16 @@ export async function importBundle(
     if (bundleJson == null) {
         throw new Error("invalid format: bundle.json file missing");
     }
-    const bundleData = JSON.parse(bundleJson);
+    let bundleData: any;
+    try {
+        bundleData = JSON.parse(bundleJson);
+    } catch (cause) {
+        throw new Error("invalid format: couldn't parse bundle.json", { cause });
+    }
 
     if (isBundleV1(bundleData)) {
         await importBundleV1(bundleData, zip, compendium);
+    } else {
+        throw new Error("unsupported bundle - is the module up to date?");
     }
 }
