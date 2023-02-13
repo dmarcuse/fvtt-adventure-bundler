@@ -33,7 +33,7 @@ export async function exportBundleV1(
     );
     console.log("Bundled asset mapping table created", remappedAssets);
 
-    const bundleData = originalAdventure.toObject(false);
+    const bundleData = originalAdventure.toObject(true);
     for (const [originalSource, newSource] of remappedAssets.entries()) {
         for (const ref of assetReferences[originalSource]) {
             _.set(bundleData, ref, newSource);
