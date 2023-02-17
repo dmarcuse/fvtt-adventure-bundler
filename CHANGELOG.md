@@ -1,6 +1,6 @@
 # Changelog
 
-## Next release
+## Version 0.2.2 - 16 February 2023
 
 - Add a warning when the foundry version, system module, or system module version doesn't match
 

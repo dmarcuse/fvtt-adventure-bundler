@@ -7,9 +7,9 @@
     "changelog": "https://github.com/dmarcuse/fvtt-adventure-bundler/blob/main/CHANGELOG.md",
     "bugs": "https://github.com/dmarcuse/fvtt-adventure-bundler/issues",
     "license": "https://github.com/dmarcuse/fvtt-adventure-bundler/blob/main/LICENSE.txt",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "manifest": "https://github.com/dmarcuse/fvtt-adventure-bundler/releases/latest/download/module.json",
-    "download": "https://github.com/dmarcuse/fvtt-adventure-bundler/releases/download/v0.2.1/module.zip",
+    "download": "https://github.com/dmarcuse/fvtt-adventure-bundler/releases/download/v0.2.2/module.zip",
     "compatibility": {
         "minimum": "10",
         "verified": "10"
