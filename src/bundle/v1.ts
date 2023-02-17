@@ -1,5 +1,5 @@
 import { AssetReferences } from "../assets";
-import { fileExtension, joinPaths, createDirs } from "../util";
+import { fileExtension, joinPaths, createDirs, checkVersions } from "../util";
 import { confirmOverwrite, downloadBundle } from "./common";
 import { IMPORT_ASSET_DIR } from "../settings";
 import JSZip from "jszip";
@@ -77,6 +77,11 @@ export async function importBundleV1(
     bundle: JSZip,
     compendium: CompendiumCollection<foundry.documents.BaseAdventure>
 ) {
+    if (!(await checkVersions(bundleData.adventureData._stats))) {
+        ui.notifications.warn("ADVENTUREBUNDLER.AbortedMessage", { localize: true });
+        return;
+    }
+
     const zipAssets = bundle.folder("assets");
     if (zipAssets == null) {
         throw new Error("assets folder missing from bundle!");

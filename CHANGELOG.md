@@ -1,5 +1,9 @@
 # Changelog
 
+## Next release
+
+- Add a warning when the foundry version, system module, or system module version doesn't match
+
 ## Version 0.2.1 - 13 February 2023
 
 - Fix folders sometimes being broken on export

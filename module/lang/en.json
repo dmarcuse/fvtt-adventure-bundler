@@ -21,6 +21,9 @@
         "SettingBundleModuleFileName": "Bundle assets from modules?",
         "SettingBundleModuleFileHint": "Should assets from add-on modules be bundled by default? Please double check copyright when using this setting!",
         "SettingBundleDataFileName": "Bundle assets from user files?",
-        "SettingBundleDataFileHint": "Should user data assets be bundled by default?"
+        "SettingBundleDataFileHint": "Should user data assets be bundled by default?",
+        "ImportVersionMismatchTitle": "Version mismatch",
+        "ImportVersionMismatchMessage": "This bundle was exported from Foundry version <strong>{coreVersion}</strong> using the <strong>{systemId}</strong> system, version <strong>{systemVersion}</strong>, which does not match the current configuration. Do you want to continue? <strong>This may break things!</strong>",
+        "AbortedMessage": "Operation aborted!"
     }
 }

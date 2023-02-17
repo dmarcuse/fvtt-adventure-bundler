@@ -14,7 +14,16 @@ declare module foundry {
             class FilePathField extends StringField { }
 
             class ArrayField extends DataField {
-                element: DataField
+                element: DataField;
+            }
+
+            interface DocumentStats {
+                coreVersion: string;
+                systemId: string;
+                systemVersion: string;
+                createdTime: number;
+                modifiedTime: number;
+                lastModifiedBy: string;
             }
         }
     }
@@ -40,6 +49,8 @@ declare module foundry {
             delete(context?: DocumentModificationContext): Promise<this>;
 
             get id(): string | null;
+
+            _stats: foundry.data.fields.DocumentStats;
         }
     }
 
@@ -149,6 +160,8 @@ declare class Dialog extends Application {
             renderData: any
         }
     ): Application;
+
+    static confirm(config?: Partial<DialogData>): Promise<boolean>;
 }
 
 interface SettingConfig<T> {
@@ -235,4 +248,6 @@ declare const game: {
     settings: ClientSettings;
     i18n: Localization;
     modules: Collection<string, Module>;
+    version: string;
+    system: { id: string, version: string };
 };

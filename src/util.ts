@@ -127,3 +127,15 @@ export function identifyPremiumCompendiums(): string[] {
         .map(pack => pack.path)
         .value();
 }
+
+export async function checkVersions(stats: foundry.data.fields.DocumentStats): Promise<boolean> {
+    if (stats.coreVersion !== game.version
+        || stats.systemId !== game.system.id
+        || stats.systemVersion !== game.system.version) {
+        return await Dialog.confirm({
+            title: "Version mismatch",
+            content: game.i18n.format("ADVENTUREBUNDLER.ImportVersionMismatchMessage", stats)
+        });
+    }
+    return true;
+}
