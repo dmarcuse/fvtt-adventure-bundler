@@ -1,0 +1,24 @@
+name: Publish release
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    name: Build and publish release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v3
+      - name: Install yarn dependencies
+        run: yarn install --immutable --immutable-cache --check-cache
+      - name: Build release
+        run: ./release.sh
+      - name: Create release
+        uses: softprops/action-gh-release@v1
+        with:
+          draft: true
+          files: |
+            module/module.json
+            module/module.zip
