@@ -61,7 +61,8 @@ Hooks.on("renderCompendium", (
         importButton.type = "button";
         importButton.appendChild(importIcon);
         importButton.appendChild(document.createTextNode(importLabel));
-        const footer = html.querySelector("footer");
+        // .header-actions for v11, footer for v10
+        const footer = html.querySelector(".header-actions") ?? html.querySelector("footer");
 
         importButton.addEventListener("click", async (event) => {
             event.preventDefault();
