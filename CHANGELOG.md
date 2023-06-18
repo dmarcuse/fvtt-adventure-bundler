@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.2.3 - 18 June 2023
+
+- Fix the import button not showing up in Foundry v11
+- Note: I'm still diagnosing occasional import issues in Foundry v11, but this should at least make it mostly usable
+
 ## Version 0.2.2 - 16 February 2023
 
 - Add a warning when the foundry version, system module, or system module version doesn't match
