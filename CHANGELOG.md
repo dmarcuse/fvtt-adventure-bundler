@@ -1,5 +1,9 @@
 # Changelog
 
+## Next Release
+
+- **Foundry v11 is now required**
+
 ## Version 0.2.3 - 18 June 2023
 
 - Fix the import button not showing up in Foundry v11

@@ -61,8 +61,6 @@ Hooks.on("renderCompendium", (
         importButton.type = "button";
         importButton.appendChild(importIcon);
         importButton.appendChild(document.createTextNode(importLabel));
-        // .header-actions for v11, footer for v10
-        const footer = html.querySelector(".header-actions") ?? html.querySelector("footer");
 
         importButton.addEventListener("click", async (event) => {
             event.preventDefault();
@@ -90,6 +88,6 @@ Hooks.on("renderCompendium", (
             picker.click();
         });
 
-        footer!.appendChild(importButton);
+        html.querySelector(".header-actions")!.appendChild(importButton);
     }
 });
