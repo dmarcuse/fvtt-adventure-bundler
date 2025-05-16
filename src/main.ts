@@ -2,8 +2,7 @@ import { classifyAsset, getAssetBundlingSettings, findAssetReferences } from "./
 import { exportBundleV1 } from "./bundle/v1";
 import { importBundle } from "./bundle";
 import { registerSettings } from "./settings";
-// import _ from "lodash-es";
-import _ from "lodash-es"
+import { pickBy } from "lodash-es"
 
 import BaseAdventure = foundry.documents.BaseAdventure;
 import Document = foundry.abstract.Document;
@@ -37,7 +36,7 @@ function addExportContextMenuEntryHook(compendium: Compendium<Document>, entries
 
                     const assetReferences = findAssetReferences(adventure);
                     const bundlingSettings = getAssetBundlingSettings();
-                    const assetsToBundle = _.pickBy(
+                    const assetsToBundle = pickBy(
                         assetReferences,
                         (_, assetPath) => bundlingSettings[classifyAsset(assetPath)]
                     );

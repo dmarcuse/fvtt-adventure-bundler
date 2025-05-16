@@ -1,5 +1,3 @@
-import _ from "lodash-es";
-
 import fields = foundry.data.fields;
 import abstract = foundry.abstract;
 
@@ -85,7 +83,7 @@ export function visitFieldsRecursive<T = unknown>(
         fieldValue;
     } else {
         visitor({
-            pathStack: _.clone(pathStack),
+            pathStack: [...pathStack],
             descriptor: fieldDescriptor,
             value: fieldValue
         }) as T;
@@ -94,19 +92,15 @@ export function visitFieldsRecursive<T = unknown>(
 
 export async function createDirs(source: string, fullDir: string, alreadyCreated?: Set<string>): Promise<Set<string>> {
     const existingDirs = new Set(alreadyCreated ?? []);
-    let dirs = _.chain(simplifyPath(fullDir, false).split("/"))
-        .filter(segment => segment != "")
-        .reduce(
-            (parents, segment) => {
-                return [
-                    ...parents,
-                    parents.length == 0 ? segment : joinPaths(parents[parents.length - 1], segment)
-                ];
-            },
-            [] as string[]
-        )
-        .filter(dir => !existingDirs.has(dir))
-        .value();
+    const dirs = simplifyPath(fullDir, false)
+        .split("/")
+        .filter(segment => segment !== "")
+        .reduce((parents, segment) => {
+            return [
+                ...parents,
+                parents.length === 0 ? segment : joinPaths(parents[parents.length - 1], segment)
+            ];
+        }, [] as string[]);
 
     for (const dir of dirs) {
         existingDirs.add(dir);
@@ -121,11 +115,10 @@ export async function createDirs(source: string, fullDir: string, alreadyCreated
 }
 
 export function identifyPremiumCompendiums(): string[] {
-    return _.chain([...game.modules.values()])
+    return [...game.modules.values()]
         .filter(module => module.protected ?? false)
         .flatMap(module => [...module.packs?.values() ?? []])
-        .map(pack => pack.path)
-        .value();
+        .map(pack => pack.path);
 }
 
 export async function checkVersions(stats: foundry.data.fields.DocumentStats): Promise<boolean> {

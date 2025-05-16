@@ -3,7 +3,7 @@ import { fileExtension, joinPaths, createDirs, checkVersions } from "../util";
 import { confirmOverwrite, downloadBundle } from "./common";
 import { IMPORT_ASSET_DIR } from "../settings";
 import JSZip from "jszip";
-import _ from "lodash-es";
+import { set, mapKeys } from "lodash-es";
 
 import fetchWithTimeout = foundry.utils.fetchWithTimeout;
 
@@ -36,7 +36,7 @@ export async function exportBundleV1(
     const bundleData = originalAdventure.toObject(true);
     for (const [originalSource, newSource] of remappedAssets.entries()) {
         for (const ref of assetReferences[originalSource]) {
-            _.set(bundleData, ref, newSource);
+            set(bundleData, ref, newSource);
         }
     }
     console.log("Updated adventure asset references");
@@ -46,7 +46,7 @@ export async function exportBundleV1(
     const json: BundleV1 = {
         bundleVersion: 1,
         adventureData: bundleData,
-        bundledAssets: _.mapKeys(
+        bundledAssets: mapKeys(
             assetReferences,
             (_, old) => remappedAssets.get(old)
         )
@@ -122,7 +122,7 @@ export async function importBundleV1(
         const result = await FilePicker.upload("data", assetDir, new File([assetData], originalName), undefined, { notify: false });
         console.log(`Upload result for ${originalName}`, result);
         for (const reference of references) {
-            _.set(bundleData.adventureData, reference, assetPath);
+            set(bundleData.adventureData, reference, assetPath);
         }
     }
 
