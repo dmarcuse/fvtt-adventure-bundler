@@ -1,8 +1,12 @@
 # Changelog
 
-## Next Release
+## Version 0.2.5 - 16 May 2025
 
-- **Foundry v11 is now required**
+- Now supports Foundry V13
+
+## Version 0.2.4 - 13 July 2024
+
+- Now supports Foundry V12
 
 ## Version 0.2.3 - 18 June 2023
 
