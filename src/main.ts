@@ -2,18 +2,27 @@ import { classifyAsset, getAssetBundlingSettings, findAssetReferences } from "./
 import { exportBundleV1 } from "./bundle/v1";
 import { importBundle } from "./bundle";
 import { registerSettings } from "./settings";
-import _ from "lodash-es";
+// import _ from "lodash-es";
+import _ from "lodash-es"
 
 import BaseAdventure = foundry.documents.BaseAdventure;
 import Document = foundry.abstract.Document;
 import { identifyPremiumCompendiums } from "./util";
+
+// TODO: remove this
+CONFIG.debug.hooks = true;
+
+Hooks.on("getAdventureContextOptions", (...args: any[]) => {
+    console.log("getAdventureContextOptions called!", args);
+    debugger;
+})
 
 Hooks.once("init", function () {
     registerSettings();
 });
 
 // Add export button to adventure context menu
-Hooks.on("getCompendiumEntryContext", (compendium: Compendium<Document>, entries: any[]) => {
+function addExportContextMenuEntryHook(compendium: Compendium<Document>, entries: any[]) {
     if (compendium != null && compendium.collection.documentClass === Adventure && game.user.isGM) {
         if (new Set(identifyPremiumCompendiums()).has(compendium.collection.metadata.path)) {
             console.log("Suppressing export button for premium compendium", compendium);
@@ -46,13 +55,25 @@ Hooks.on("getCompendiumEntryContext", (compendium: Compendium<Document>, entries
             }
         })
     }
-});
+}
+
+Hooks.on("getCompendiumEntryContext", addExportContextMenuEntryHook);
+Hooks.on("getAdventureContextOptions", addExportContextMenuEntryHook);
 
 // Add import button to adventure compendiums
 Hooks.on("renderCompendium", (
     compendium: Compendium<foundry.abstract.Document>,
-    [html]: [HTMLElement]
+    maybeHtml: HTMLElement | [HTMLElement]
 ) => {
+    // Foundry V13 passes an HTMLElement directly, but in older versions it may
+    // be wrapped in a jquery wrapper that can be unwrapped as if it were an array
+    let html: HTMLElement;
+    if (Symbol.iterator in maybeHtml) {
+        [html] = maybeHtml;
+    } else {
+        html = maybeHtml;
+    }
+
     if (compendium.collection.documentClass === Adventure && game.user.isGM && !compendium.collection.locked) {
         const importIcon = document.createElement("i");
         importIcon.classList.add("fa-solid", "fa-upload");
