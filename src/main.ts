@@ -8,14 +8,6 @@ import BaseAdventure = foundry.documents.BaseAdventure;
 import Document = foundry.abstract.Document;
 import { identifyPremiumCompendiums } from "./util";
 
-// TODO: remove this
-CONFIG.debug.hooks = true;
-
-Hooks.on("getAdventureContextOptions", (...args: any[]) => {
-    console.log("getAdventureContextOptions called!", args);
-    debugger;
-})
-
 Hooks.once("init", function () {
     registerSettings();
 });
@@ -30,9 +22,20 @@ function addExportContextMenuEntryHook(compendium: Compendium<Document>, entries
         entries.push({
             name: "ADVENTUREBUNDLER.BundleAdventureButton",
             icon: "<i class='fas fa-download'></i>",
-            callback: async ([li]: [any]) => {
+            callback: async (maybeLi: HTMLLIElement | [HTMLLIElement]) => {
+                // Foundry V13 passes an HTMLElement directly, but in older
+                // versions it may be wrapped in a jquery wrapper that can be
+                // unwrapped as if it were an array
+                let li: HTMLLIElement;
+                if (Symbol.iterator in maybeLi) {
+                    [li] = maybeLi;
+                } else {
+                    li = maybeLi;
+                }
                 try {
-                    const adventure = await compendium.collection.getDocument(li.dataset.documentId) as BaseAdventure;
+                    // documentId when <= V12, entryId when >= V13
+                    const id = li.dataset.documentId ?? li.dataset.entryId!;
+                    const adventure = await compendium.collection.getDocument(id) as BaseAdventure;
 
                     const assetReferences = findAssetReferences(adventure);
                     const bundlingSettings = getAssetBundlingSettings();
@@ -56,8 +59,8 @@ function addExportContextMenuEntryHook(compendium: Compendium<Document>, entries
     }
 }
 
-Hooks.on("getCompendiumEntryContext", addExportContextMenuEntryHook);
-Hooks.on("getAdventureContextOptions", addExportContextMenuEntryHook);
+Hooks.on("getCompendiumEntryContext", addExportContextMenuEntryHook); // <= V12
+Hooks.on("getAdventureContextOptions", addExportContextMenuEntryHook);// >= V13
 
 // Add import button to adventure compendiums
 Hooks.on("renderCompendium", (
