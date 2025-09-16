@@ -1,6 +1,6 @@
 # Changelog
 
-## Version 0.2.6 - 16 September 2026
+## Version 0.2.6 - 16 September 2025
 
 - Fix import/export buttons not appearing with game systems that use a different the adventure document (e.g. dnd5e)
 
