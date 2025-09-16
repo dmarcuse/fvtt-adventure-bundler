@@ -12,9 +12,14 @@ Hooks.once("init", function () {
     registerSettings();
 });
 
+function isAdventureCompendium(compendium: Compendium<Document> | null): compendium is Compendium<Adventure> {
+    return compendium?.collection?.documentClass === Adventure ||
+        compendium?.collection?.documentClass?.prototype instanceof Adventure;
+}
+
 // Add export button to adventure context menu
 function addExportContextMenuEntryHook(compendium: Compendium<Document>, entries: any[]) {
-    if (compendium != null && compendium.collection.documentClass === Adventure && game.user.isGM) {
+    if (isAdventureCompendium(compendium) && game.user.isGM) {
         if (new Set(identifyPremiumCompendiums()).has(compendium.collection.metadata.path)) {
             console.log("Suppressing export button for premium compendium", compendium);
             return;
@@ -35,8 +40,7 @@ function addExportContextMenuEntryHook(compendium: Compendium<Document>, entries
                 try {
                     // documentId when <= V12, entryId when >= V13
                     const id = li.dataset.documentId ?? li.dataset.entryId!;
-                    const adventure = await compendium.collection.getDocument(id) as BaseAdventure;
-
+                    const adventure = await compendium.collection.getDocument(id);
                     const assetReferences = findAssetReferences(adventure);
                     const bundlingSettings = getAssetBundlingSettings();
                     const assetsToBundle = pickBy(
@@ -64,7 +68,7 @@ Hooks.on("getAdventureContextOptions", addExportContextMenuEntryHook);// >= V13
 
 // Add import button to adventure compendiums
 Hooks.on("renderCompendium", (
-    compendium: Compendium<foundry.abstract.Document>,
+    compendium: Compendium<Document>,
     maybeHtml: HTMLElement | [HTMLElement]
 ) => {
     // Foundry V13 passes an HTMLElement directly, but in older versions it may
@@ -76,7 +80,7 @@ Hooks.on("renderCompendium", (
         html = maybeHtml;
     }
 
-    if (compendium.collection.documentClass === Adventure && game.user.isGM && !compendium.collection.locked) {
+    if (isAdventureCompendium(compendium) && game.user.isGM && !compendium.collection.locked) {
         const importIcon = document.createElement("i");
         importIcon.classList.add("fa-solid", "fa-upload");
         const importLabel = game.i18n.localize("ADVENTUREBUNDLER.UnbundleAdventureButton");
@@ -95,7 +99,7 @@ Hooks.on("renderCompendium", (
                 const bundleFile = picker.files?.[0];
                 if (bundleFile != null) {
                     try {
-                        await importBundle(bundleFile, compendium.collection as CompendiumCollection<BaseAdventure>);
+                        await importBundle(bundleFile, compendium.collection);
                     } catch (err) {
                         const message = err instanceof Error ? err.message : String(err);
                         const localizedMessage = game.i18n.format("ADVENTUREBUNDLER.BundleImportFailed", { message });
