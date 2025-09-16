@@ -1,5 +1,9 @@
 # Changelog
 
+## Version 0.2.6 - 16 September 2026
+
+- Fix import/export buttons not appearing with game systems that use a different the adventure document (e.g. dnd5e)
+
 ## Version 0.2.5 - 16 May 2025
 
 - Now supports Foundry V13
